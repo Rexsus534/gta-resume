@@ -1,0 +1,77 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Golden Hour — City Drive</title>
+  </head>
+  <body>
+    <canvas id="game"></canvas>
+
+    <div id="hud" class="hidden">
+      <div id="minimap-wrap">
+        <canvas id="minimap" width="220" height="220"></canvas>
+        <div id="compass">N</div>
+      </div>
+
+      <div id="mode-panel">
+        <span id="mode-dot"></span>
+        <span id="mode-label">ON FOOT</span>
+      </div>
+
+      <div id="speedo-wrap">
+        <canvas id="speedo" width="200" height="130"></canvas>
+        <div id="speed-readout"><span id="speed-value">0</span><span id="speed-unit">km/h</span></div>
+      </div>
+
+      <div id="hint">
+        <b>WASD</b> move &nbsp;·&nbsp; <b>Shift</b> sprint &nbsp;·&nbsp; <b>Mouse</b> look
+        &nbsp;·&nbsp; <b>Scroll</b> zoom &nbsp;·&nbsp; <b>F</b> enter / exit car
+        &nbsp;·&nbsp; <b>Esc</b> release cursor
+      </div>
+
+      <div id="prompt" class="hidden">Press <b>F</b> to get in</div>
+
+      <div id="objective">
+        <div class="obj-head">
+          <span id="obj-progress">0 / 0</span>
+          <span class="obj-label">Monuments</span>
+        </div>
+        <div class="obj-line">
+          <span id="obj-arrow">➤</span>
+          <span id="obj-text">Locating…</span>
+        </div>
+        <div id="obj-dist"></div>
+      </div>
+
+      <div id="mission-banner" class="hidden">
+        <div class="mb-kicker">Monument secured</div>
+        <div class="mb-title">Mission Passed</div>
+        <div id="mb-name"></div>
+      </div>
+    </div>
+
+    <aside id="panel" class="hidden" aria-hidden="true">
+      <div class="panel-card">
+        <button id="panel-close" type="button" aria-label="Close panel">&times;</button>
+        <div id="panel-scroll"></div>
+        <div class="panel-hint">Press <b>Esc</b> to close · click the city to resume</div>
+      </div>
+    </aside>
+
+    <div id="click-to-play" class="hidden">
+      <div class="cta">Click to play</div>
+    </div>
+
+    <div id="loading">
+      <div class="loading-inner">
+        <h1>GOLDEN HOUR</h1>
+        <p class="sub">City Drive</p>
+        <div class="bar"><div class="bar-fill" id="bar-fill"></div></div>
+        <p class="status" id="load-status">Loading…</p>
+      </div>
+    </div>
+
+    <script type="module" src="/src/main.js"></script>
+  </body>
+</html>

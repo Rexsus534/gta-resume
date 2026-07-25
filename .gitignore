@@ -1,0 +1,5 @@
+node_modules
+dist
+assets-src/
+.dev-shots/
+.DS_Store

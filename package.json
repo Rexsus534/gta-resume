@@ -1,0 +1,19 @@
+{
+  "name": "gta-resume",
+  "private": true,
+  "version": "1.0.0",
+  "type": "module",
+  "scripts": {
+    "predev": "node scripts/extract-anims.mjs",
+    "dev": "vite",
+    "prebuild": "node scripts/extract-anims.mjs",
+    "build": "vite build",
+    "preview": "vite preview"
+  },
+  "dependencies": {
+    "three": "^0.185.1"
+  },
+  "devDependencies": {
+    "vite": "^8.1.5"
+  }
+}
