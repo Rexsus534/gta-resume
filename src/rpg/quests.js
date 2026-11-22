@@ -1,4 +1,0 @@
-import * as THREE from 'three';
-export function makeQuest(){return{fragments:0,complete:false};}
-export function interactQuest(q,p,w){const n=Math.hypot(p.position.x-w.npc.x,p.position.z-w.npc.z);if(n<3.6){if(q.fragments<3)return'Köy büyüğü: Ormanın dört bir yanına dağılmış üç mühür kristalini bul. Sonra kuzeydoğudaki sunağa getir.';return'Köy büyüğü: Kristaller tamamlandı! Kadim sunağa git ve Eldoria\'yı kurtar.';}const a=Math.hypot(p.position.x-w.altar.x,p.position.z-w.altar.z);if(a<4){if(q.fragments<3)return'Sunak kilitli. '+q.fragments+'/3 mühür kristali buldun.';if(!q.complete){q.complete=true;return'KADİM MÜHÜR AKTİF! Eldoria yeniden ışığa kavuştu!';}return'Eldoria\'nın mührü yeniden parlıyor.';}return'Yakında etkileşime geçebileceğin bir şey yok.';}
-export function updateQuest(q,p,w,notify){if(q.complete)return;if(q.fragments>=3&&Math.hypot(p.position.x-w.altar.x,p.position.z-w.altar.z)<3.2){q.complete=true;notify('Eldoria kurtuldu! Görev tamamlandı.');}}
