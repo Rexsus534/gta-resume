@@ -33,7 +33,7 @@ async function boot() {
   const player = await createPlayer(engine.scene, loader.manager, city.playerSpawn, loader.setStatus);
   loader.setStatus('Starting city traffic');
   const traffic = createTraffic(engine.scene, city.graph);
-  const pedestrians = createPedestrians(engine.scene, 64);
+  const pedestrians = createPedestrians(engine.scene, 48);
 
   const parkRng = makeRng(4711);
   const parked = city.parking.map((p) => new Vehicle(engine.scene, {
@@ -70,13 +70,15 @@ async function boot() {
       if (!v) return;
       if (v.driver === 'ai') {
         v.ejectDriver(engine.scene);
-        v.speed = Math.min(v.speed, 2.5);
+        v.stolen = true;
+        v.speed *= 0.12;
         wantedLevel = Math.min(5, Math.max(2, wantedLevel + 1));
         wantedTimer = 28;
         stolenCars++;
         siren.start();
         hud.notify('Sürücü araçtan indi! Polis peşine düştü.');
       } else {
+        v.openDriverDoor();
         hud.notify('Araca bindin.');
       }
       state.activeVehicle = v;
