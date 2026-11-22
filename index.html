@@ -1,25 +1,17 @@
 <!doctype html>
-<html lang="tr">
-<head>
-<meta charset="UTF-8">
-<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
-<meta name="theme-color" content="#111820">
-<title>VICE CITY STORIES — Açık Dünya</title>
-</head>
+<html lang="tr"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no"><meta name="theme-color" content="#151016"><title>VICE CITY — Open World</title></head>
 <body>
 <canvas id="game"></canvas>
-<div id="game-ui"></div>
-<div id="start-screen">
- <div class="start-card">
-  <div class="eyebrow">AÇIK DÜNYA • ŞEHİR HAYATI</div>
-  <h1>VICE CITY</h1>
-  <div class="subtitle">STORIES</div>
-  <p>Kıyı şehrini keşfet. Sokaklarda dolaş, araçlara bin, trafiğe karış ve teslimat görevlerini tamamla.</p>
-  <button id="start-button">ŞEHRE GİR</button>
-  <div class="start-controls">WASD HAREKET / SÜRÜŞ · SHIFT KOŞ · F ARACA BİN / İN · E ETKİLEŞİM</div>
- </div>
+<div id="hud" class="hidden">
+ <div id="minimap-wrap"><canvas id="minimap" width="220" height="220"></canvas><div id="compass">N</div></div>
+ <div id="mode-panel"><span id="mode-dot"></span><span id="mode-label">ON FOOT</span></div>
+ <div id="speedo-wrap"><canvas id="speedo" width="200" height="130"></canvas><div id="speed-readout"><span id="speed-value">0</span><span id="speed-unit">km/h</span></div></div>
+ <div id="hint"><b>WASD</b> hareket · <b>SHIFT</b> koş · <b>Mouse</b> kamera · <b>F</b> araca bin / in · <b>SPACE</b> el freni · <b>ESC</b> fareyi bırak</div>
+ <div id="prompt" class="hidden">Press <b>F</b> to get in</div>
+ <div id="wanted"><span>WANTED</span><b id="wanted-stars">☆☆☆☆☆</b><small id="wanted-status">Şehir sakin</small></div>
+ <div id="city-label"><b>VICE CITY</b><small>OCEAN DRIVE DISTRICT</small></div>
 </div>
-<div id="loading-screen"><div class="loader-title">VICE CITY</div><div id="loading-text">ŞEHİR YÜKLENİYOR...</div><div class="loader-track"><span></span></div></div>
+<div id="click-to-play" class="hidden"><div class="cta">Şehre girmek için tıkla</div></div>
+<div id="loading"><div class="loading-inner"><h1>VICE CITY</h1><p class="sub">OPEN WORLD STORIES</p><div class="bar"><div class="bar-fill" id="bar-fill"></div></div><p class="status" id="load-status">Şehir hazırlanıyor...</p></div></div>
 <script type="module" src="./src/main.js"></script>
-</body>
-</html>
+</body></html>
