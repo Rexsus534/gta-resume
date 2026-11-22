@@ -109,7 +109,7 @@ export function makeWorld(scene){
   pedestrians.push({group:g,x,z,phase:i*.8,dir:i%2?1:-1});
  }
  const cars=[];
- const parked=[[-10,13,'#d44d48',Math.PI/2],[-25,5,'#d44d48',Math.PI/2],[18,-24,'#e2bd50',0],[55,18,'#4c8fb4',Math.PI/2],[-58,18,'#e7e5db',0],[23,56,'#5e9c70',Math.PI/2],[-20,-55,'#a65b9b',0],[75,-25,'#cf7542',Math.PI/2]];
+ const parked=[[-8,14,'#d44d48',Math.PI/2],[-25,5,'#d44d48',Math.PI/2],[18,-24,'#e2bd50',0],[55,18,'#4c8fb4',Math.PI/2],[-58,18,'#e7e5db',0],[23,56,'#5e9c70',Math.PI/2],[-20,-55,'#a65b9b',0],[75,-25,'#cf7542',Math.PI/2]];
  for(const [x,z,c,r] of parked)cars.push({group:carStatic(root,x,z,c,r),x,z,rotation:r,speed:0,occupied:false});
  const spawn={x:-7,z:17};
  const missionNpc={x:8,z:18,group:human(root,8,18,'#e7c15e','#26394c')};
