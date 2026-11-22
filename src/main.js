@@ -21,6 +21,22 @@ import { CAR, PLAYER } from './config.js';
 
 const _exit = new THREE.Vector3();
 
+function showFatalError(err) {
+  const loading = document.getElementById('loading');
+  const status = document.getElementById('load-status');
+  const title = document.querySelector('#loading h1');
+  const sub = document.querySelector('#loading .sub');
+  const bar = document.getElementById('bar-fill');
+  if (loading) {
+    loading.classList.remove('hidden', 'done');
+    loading.style.display = 'grid';
+  }
+  if (title) title.textContent = 'VICE CITY — HATA';
+  if (sub) sub.textContent = 'OYUN BAŞLATILAMADI';
+  if (bar) bar.style.width = '0%';
+  if (status) status.textContent = err?.stack || err?.message || String(err);
+}
+
 async function boot() {
   const engine = createEngine();
   const loader = createLoader();
@@ -163,8 +179,13 @@ async function boot() {
 
   function frame() {
     requestAnimationFrame(frame);
-    timer.update();
-    step(Math.min(timer.getDelta(), 1 / 20));
+    try {
+      timer.update();
+      step(Math.min(timer.getDelta(), 1 / 20));
+    } catch (err) {
+      console.error('[game loop] fatal error:', err);
+      showFatalError(err);
+    }
   }
 
   if (import.meta.env.DEV) {
@@ -177,5 +198,5 @@ async function boot() {
 boot().catch((err) => {
   console.error(err);
   const status = document.getElementById('load-status');
-  if (status) status.textContent = `Failed to start: ${err.message}`;
+  showFatalError(err);
 });
