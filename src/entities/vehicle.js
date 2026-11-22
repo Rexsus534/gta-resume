@@ -89,8 +89,21 @@ function angleDelta(a, b) {
 
 const _probe = new THREE.Vector3();
 
+function makeDriverFigure() {
+  const group = new THREE.Group();
+  const jacket = new THREE.MeshStandardMaterial({ color: 0x263d53, roughness: 0.95 });
+  const skin = new THREE.MeshStandardMaterial({ color: 0xb98261, roughness: 0.95 });
+  const torso = new THREE.Mesh(new THREE.CapsuleGeometry(0.2, 0.34, 3, 7), jacket);
+  torso.position.y = 0.92;
+  const head = new THREE.Mesh(new THREE.SphereGeometry(0.15, 9, 7), skin);
+  head.position.y = 1.34;
+  group.add(torso, head);
+  group.traverse((o) => { if (o.isMesh) { o.castShadow = true; o.receiveShadow = true; } });
+  return group;
+}
+
 export class Vehicle {
-  constructor(scene, { x, z, heading = 0, colour = CAR_COLOURS[0] }) {
+  constructor(scene, { x, z, heading = 0, colour = CAR_COLOURS[0], police = false }) {
     const geo = buildSharedGeometry();
 
     this.root = new THREE.Group();
@@ -100,8 +113,9 @@ export class Vehicle {
     this.chassisPivot = new THREE.Group();
     this.root.add(this.chassisPivot);
 
+    this.isPolice = police;
     this.bodyMat = new THREE.MeshStandardMaterial({
-      color: colour,
+      color: police ? 0xe8e8e2 : colour,
       roughness: 0.36,
       metalness: 0.28,
     });
@@ -112,6 +126,23 @@ export class Vehicle {
     this.chassisPivot.add(chassis);
 
     this.chassisPivot.add(new THREE.Mesh(geo.glass, glassMat));
+
+    this.driverFigure = makeDriverFigure();
+    this.driverFigure.position.set(-0.42, 0.05, 0.22);
+    this.driverFigure.visible = false;
+    this.root.add(this.driverFigure);
+
+    if (police) {
+      const bar = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.12, 0.28), new THREE.MeshStandardMaterial({ color: 0x222831, metalness: 0.55, roughness: 0.3 }));
+      bar.position.set(0, 1.57, -0.12);
+      this.root.add(bar);
+      this.redBeacon = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.16, 0.27), new THREE.MeshStandardMaterial({ color: 0xff2020, emissive: 0xff1010, emissiveIntensity: 3 }));
+      this.blueBeacon = new THREE.Mesh(new THREE.BoxGeometry(0.34, 0.16, 0.27), new THREE.MeshStandardMaterial({ color: 0x164cff, emissive: 0x164cff, emissiveIntensity: 3 }));
+      this.redBeacon.position.set(-0.25, 1.64, -0.12);
+      this.blueBeacon.position.set(0.25, 1.64, -0.12);
+      this.root.add(this.redBeacon, this.blueBeacon);
+      this._policeClock = 0;
+    }
     this.headlights = new THREE.Mesh(geo.heads, headMat);
     this.taillights = new THREE.Mesh(geo.tails, tailMat);
     this.chassisPivot.add(this.headlights, this.taillights);
@@ -129,10 +160,45 @@ export class Vehicle {
     this.heading = heading;
     this.speed = 0;
     this.steer = 0;
-    this.driver = null; // 'player' | 'ai' | null
+    this._driver = null; // 'player' | 'ai' | null
+    this.ejectedNpc = null;
     this._roll = 0;
     this._pitch = 0;
     this._wheelSpin = 0;
+  }
+
+  get driver() { return this._driver; }
+  set driver(value) {
+    this._driver = value;
+    if (this.driverFigure) this.driverFigure.visible = value === 'ai';
+  }
+
+  ejectDriver(scene) {
+    if (this.driver !== 'ai' || this.ejectedNpc) return false;
+    const npc = makeDriverFigure();
+    const rightX = Math.cos(this.heading);
+    const rightZ = -Math.sin(this.heading);
+    npc.position.set(this.position.x - rightX * 2.05, 0, this.position.z - rightZ * 2.05);
+    npc.rotation.y = this.heading;
+    scene.add(npc);
+    this.ejectedNpc = { group: npc, elapsed: 0, rightX, rightZ };
+    this.driver = null;
+    return true;
+  }
+
+  updateEjection(dt) {
+    if (!this.ejectedNpc) return;
+    const e = this.ejectedNpc;
+    e.elapsed += dt;
+    const t = Math.min(1, e.elapsed / 0.72);
+    e.group.position.x -= e.rightX * dt * 0.9;
+    e.group.position.z -= e.rightZ * dt * 0.9;
+    e.group.rotation.z = Math.sin(t * Math.PI) * 0.9;
+    e.group.position.y = Math.sin(t * Math.PI) * 0.12;
+    if (t >= 1) {
+      e.group.parent?.remove(e.group);
+      this.ejectedNpc = null;
+    }
   }
 
   get forwardX() {
@@ -145,6 +211,13 @@ export class Vehicle {
 
   /** @param {{throttle:number, steer:number, handbrake:boolean}} controls */
   update(dt, controls) {
+    this.updateEjection(dt);
+    if (this.isPolice) {
+      this._policeClock += dt;
+      const phase = Math.sin(this._policeClock * 10) > 0;
+      this.redBeacon.visible = phase;
+      this.blueBeacon.visible = !phase;
+    }
     const throttle = controls?.throttle ?? 0;
     const steerInput = controls?.steer ?? 0;
     const handbrake = controls?.handbrake ?? false;
