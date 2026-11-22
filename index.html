@@ -1,77 +1,43 @@
 <!doctype html>
-<html lang="en">
-  <head>
-    <meta charset="utf-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1" />
-    <title>Golden Hour — City Drive</title>
-  </head>
-  <body>
-    <canvas id="game"></canvas>
-
-    <div id="hud" class="hidden">
-      <div id="minimap-wrap">
-        <canvas id="minimap" width="220" height="220"></canvas>
-        <div id="compass">N</div>
+<html lang="tr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
+<meta name="theme-color" content="#172b24">
+<title>Eldoria: Kayıp Krallık</title>
+<style>
+:root{color-scheme:dark;font-family:ui-monospace,SFMono-Regular,Consolas,monospace;background:#101b19;color:#f5edcf}
+*{box-sizing:border-box}body{margin:0;min-height:100vh;display:grid;place-items:center;background:radial-gradient(ellipse at center,#294438,#101b19 72%);overflow:hidden}
+#shell{width:min(100vw,1100px);padding:12px}#top{display:flex;justify-content:space-between;align-items:center;padding:8px 12px;color:#f4d98b;letter-spacing:2px;font-weight:900}
+#game-wrap{position:relative;border:4px solid #9a7041;box-shadow:0 0 0 4px #34291e,0 18px 60px #0009;background:#203a2d;overflow:hidden}
+canvas{display:block;width:100%;height:auto;image-rendering:pixelated;image-rendering:crisp-edges;touch-action:none}
+#overlay{position:absolute;inset:0;pointer-events:none;display:flex;align-items:center;justify-content:center;background:#07120dcc}
+#overlay.hidden{display:none}.panel{pointer-events:auto;text-align:center;padding:28px;max-width:520px;background:#1c3028;border:3px solid #c69a58;box-shadow:8px 8px 0 #0b1512}
+h1{font-size:clamp(24px,5vw,46px);line-height:1.1;color:#f7d98d;margin:0 0 10px;text-shadow:3px 3px #613e2a}.panel p{color:#d9d3b4;line-height:1.6}
+button{font:inherit;color:#fff1c7;background:#795333;border:2px solid #d7b36c;padding:10px 15px;cursor:pointer;box-shadow:3px 3px 0 #33251c}button:active{transform:translate(2px,2px);box-shadow:1px 1px 0 #33251c}
+#start-btn{font-weight:900;background:#47734a;margin-top:10px}
+#mobile-controls{position:absolute;inset:auto 12px 12px;display:none;justify-content:space-between;align-items:end;pointer-events:none}
+.pad{display:grid;grid-template-columns:42px 42px 42px;grid-template-rows:42px 42px 42px;gap:3px;pointer-events:auto}
+.pad button,.actions button{padding:0;background:#18251dcc;border-color:#d9c18b;font-size:18px;touch-action:none;user-select:none}
+.pad [data-dir=up]{grid-column:2}.pad [data-dir=left]{grid-column:1;grid-row:2}.pad [data-dir=down]{grid-column:2;grid-row:2}.pad [data-dir=right]{grid-column:3;grid-row:2}
+.actions{display:flex;gap:8px;pointer-events:auto}.actions button{width:54px;height:54px;border-radius:50%;font-weight:900}
+@media(max-width:700px){#shell{padding:4px}#top{font-size:11px;padding:5px}#mobile-controls{display:flex}.panel{padding:16px;margin:12px}#game-wrap{border-width:3px}}
+</style>
+</head>
+<body>
+<div id="shell">
+  <div id="top"><span>✦ ELDORIA</span><span>KAYIP KRALLIK</span><span id="version">DEMO 0.1</span></div>
+  <div id="game-wrap">
+    <canvas id="game" width="960" height="540" aria-label="Eldoria 2D RPG oyun alanı"></canvas>
+    <div id="overlay"><div class="panel"><h1>ELDORIA</h1><p>Kayıp Krallık'a hoş geldin.<br>Orman köyünü keşfet, yaratıkları yen ve kadim mührün parçalarını bul.</p><p>WASD / yön tuşları: hareket · Boşluk: saldırı · E: konuş / etkileşim · I: çanta</p><button id="start-btn">MACERAYA BAŞLA</button></div></div>
+    <div id="mobile-controls">
+      <div class="pad">
+        <button data-dir="up">▲</button><button data-dir="left">◀</button><button data-dir="down">▼</button><button data-dir="right">▶</button>
       </div>
-
-      <div id="mode-panel">
-        <span id="mode-dot"></span>
-        <span id="mode-label">ON FOOT</span>
-      </div>
-
-      <div id="speedo-wrap">
-        <canvas id="speedo" width="200" height="130"></canvas>
-        <div id="speed-readout"><span id="speed-value">0</span><span id="speed-unit">km/h</span></div>
-      </div>
-
-      <div id="hint">
-        <b>WASD</b> move &nbsp;·&nbsp; <b>Shift</b> sprint &nbsp;·&nbsp; <b>Mouse</b> look
-        &nbsp;·&nbsp; <b>Scroll</b> zoom &nbsp;·&nbsp; <b>F</b> enter / exit car
-        &nbsp;·&nbsp; <b>Esc</b> release cursor
-      </div>
-
-      <div id="prompt" class="hidden">Press <b>F</b> to get in</div>
-
-      <div id="objective">
-        <div class="obj-head">
-          <span id="obj-progress">0 / 0</span>
-          <span class="obj-label">Monuments</span>
-        </div>
-        <div class="obj-line">
-          <span id="obj-arrow">➤</span>
-          <span id="obj-text">Locating…</span>
-        </div>
-        <div id="obj-dist"></div>
-      </div>
-
-      <div id="mission-banner" class="hidden">
-        <div class="mb-kicker">Monument secured</div>
-        <div class="mb-title">Mission Passed</div>
-        <div id="mb-name"></div>
-      </div>
+      <div class="actions"><button data-action="interact">E</button><button data-action="attack">⚔</button></div>
     </div>
-
-    <aside id="panel" class="hidden" aria-hidden="true">
-      <div class="panel-card">
-        <button id="panel-close" type="button" aria-label="Close panel">&times;</button>
-        <div id="panel-scroll"></div>
-        <div class="panel-hint">Press <b>Esc</b> to close · click the city to resume</div>
-      </div>
-    </aside>
-
-    <div id="click-to-play" class="hidden">
-      <div class="cta">Click to play</div>
-    </div>
-
-    <div id="loading">
-      <div class="loading-inner">
-        <h1>GOLDEN HOUR</h1>
-        <p class="sub">City Drive</p>
-        <div class="bar"><div class="bar-fill" id="bar-fill"></div></div>
-        <p class="status" id="load-status">Loading…</p>
-      </div>
-    </div>
-
-    <script type="module" src="./src/main.js"></script>
-  </body>
+  </div>
+</div>
+<script type="module" src="./src/rpg/main.js"></script>
+</body>
 </html>
