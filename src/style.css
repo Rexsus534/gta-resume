@@ -599,3 +599,15 @@ body {
   text-transform: uppercase;
   color: rgba(255, 255, 255, 0.42);
 }
+
+/* Vice City wanted level + in-game feedback */
+#wanted{position:fixed;top:22px;left:22px;transform:translateY(105px);display:flex;flex-direction:column;gap:4px;min-width:210px;padding:11px 15px;background:rgba(10,8,12,.72);border:1px solid rgba(255,186,110,.28);border-left:3px solid #ffb257;border-radius:9px;pointer-events:none;backdrop-filter:blur(8px)}
+#wanted span{font-size:9px;letter-spacing:3px;color:#ffb257;font-weight:800}
+#wanted b{font-size:21px;letter-spacing:4px;color:#ffd36c;text-shadow:0 0 12px #ff9c3c}
+#wanted small{font-size:10px;color:rgba(255,255,255,.6);letter-spacing:1px}
+#city-label{position:fixed;left:22px;top:20px;display:flex;flex-direction:column;gap:2px;pointer-events:none;text-shadow:0 2px 8px #000}
+#city-label b{font-size:20px;letter-spacing:4px;color:#ffd39c}
+#city-label small{font-size:8px;letter-spacing:3px;color:#ffffff99}
+#toast{position:fixed;left:50%;top:20%;transform:translateX(-50%);padding:11px 18px;background:rgba(12,9,13,.88);border:1px solid rgba(255,178,87,.65);border-radius:7px;color:#fff;font-size:13px;letter-spacing:.3px;opacity:0;transition:opacity .2s;pointer-events:none;z-index:15;white-space:nowrap}
+#toast.show{opacity:1}
+@media(max-width:700px){#minimap-wrap{width:150px;height:150px;top:10px;right:10px}#minimap{width:150px;height:150px}#mode-panel{top:172px;right:10px}#city-label{left:10px;top:10px}#city-label b{font-size:15px}#wanted{left:10px;top:50px;transform:none;min-width:160px;padding:7px 10px}#hint{left:10px;right:10px;bottom:10px;font-size:9px}#speedo-wrap{right:10px;bottom:45px}#toast{max-width:90vw;white-space:normal;text-align:center}}
