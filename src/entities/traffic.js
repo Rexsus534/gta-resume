@@ -132,6 +132,7 @@ export function createTraffic(scene, graph, seed = 8675309) {
      * doesn't try to resume a leg from wherever the player abandoned it.
      */
     releaseControl(vehicle) {
+      if (vehicle.stolen) { vehicle.driver = null; return; }
       const driver = cars.find((c) => c.vehicle === vehicle);
       if (!driver) {
         // A parked car — it simply stays where the player left it.
