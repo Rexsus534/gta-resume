@@ -132,6 +132,16 @@ export class Vehicle {
     this.driverFigure.visible = false;
     this.root.add(this.driverFigure);
 
+    this.driverDoor = new THREE.Group();
+    this.driverDoor.position.set(-0.96, 0.68, 0.3);
+    const doorPanel = new THREE.Mesh(new THREE.BoxGeometry(0.07, 0.5, 0.92), this.bodyMat);
+    doorPanel.position.z = -0.28;
+    this.driverDoor.add(doorPanel);
+    this.root.add(this.driverDoor);
+    this._doorAngle = 0;
+    this._doorTarget = 0;
+    this._doorTimer = 0;
+
     if (police) {
       const bar = new THREE.Mesh(new THREE.BoxGeometry(0.95, 0.12, 0.28), new THREE.MeshStandardMaterial({ color: 0x222831, metalness: 0.55, roughness: 0.3 }));
       bar.position.set(0, 1.57, -0.12);
@@ -173,7 +183,13 @@ export class Vehicle {
     if (this.driverFigure) this.driverFigure.visible = value === 'ai';
   }
 
+  openDriverDoor() {
+    this._doorTarget = 1.05;
+    this._doorTimer = 0.72;
+  }
+
   ejectDriver(scene) {
+    this.openDriverDoor();
     if (this.driver !== 'ai' || this.ejectedNpc) return false;
     const npc = makeDriverFigure();
     const rightX = Math.cos(this.heading);
@@ -212,6 +228,10 @@ export class Vehicle {
   /** @param {{throttle:number, steer:number, handbrake:boolean}} controls */
   update(dt, controls) {
     this.updateEjection(dt);
+    if (this._doorTimer > 0) this._doorTimer -= dt;
+    else this._doorTarget = 0;
+    this._doorAngle += (this._doorTarget - this._doorAngle) * Math.min(1, dt * 9);
+    this.driverDoor.rotation.y = this._doorAngle;
     if (this.isPolice) {
       this._policeClock += dt;
       const phase = Math.sin(this._policeClock * 10) > 0;
