@@ -4,6 +4,7 @@ const clear=(x,y,r=2)=>{for(let yy=y-r;yy<=y+r;yy++)for(let xx=x-r;xx<=x+r;xx++)
 for(let x=7;x<58;x++)clear(x,22,1);for(let y=8;y<38;y++)clear(32,y,1);
 for(let y=16;y<29;y++)for(let x=8;x<20;x++)tiles[y][x]=0;
 const spawn={x:13*S,y:22*S},npc={x:16*S,y:20*S},altar={x:51*S,y:9*S};
+for(const [x,y] of [[21,14],[47,10],[51,31],[26,30],[40,25],[16,12],[51,9]])clear(x,y,2);
 const obstacles=[];for(let y=0;y<height;y++)for(let x=0;x<width;x++)if(tiles[y][x]===2||tiles[y][x]===3||tiles[y][x]===4)obstacles.push({x:x*S,y:y*S,t:tiles[y][x]});
 return{width,height,tiles,spawn,npc,altar,obstacles};}
 export function isSolid(world,x,y){const tx=Math.floor(x/S),ty=Math.floor(y/S);if(!world.tiles[ty]||world.tiles[ty][tx]===undefined)return true;const t=world.tiles[ty][tx];return t===2||t===3||t===4;}
