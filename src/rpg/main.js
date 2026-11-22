@@ -102,6 +102,7 @@ function frame(){
   const nearAltar=Math.hypot(player.position.x-world.altar.x,player.position.z-world.altar.z)<3.4;
   ui.setPrompt(nearNpc?'E — Köy büyüğüyle konuş':nearAltar?'E — Kadim sunağı incele':'');
   ui.update(player,quest);
+  ui.drawMap(player,world,quest);
  }else if(started){ui.update(player,quest);}
  updateWorld(world,dt);
  const px=player.position.x,pz=player.position.z;
