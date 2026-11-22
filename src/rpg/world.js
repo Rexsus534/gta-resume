@@ -66,19 +66,19 @@ export function makeWorld(scene){
    mesh(root,new THREE.BoxGeometry(.16,.018,4),line,p,-.005,k*18,false);
    mesh(root,new THREE.BoxGeometry(4,.018,.16),line,k*18,-.004,p,false);
   }
-  mesh(root,new THREE.BoxGeometry(15,.22,220),sidewalk,p-13,.02,0,false);
-  mesh(root,new THREE.BoxGeometry(15,.22,220),sidewalk,p+13,.02,0,false);
-  mesh(root,new THREE.BoxGeometry(220,.22,15),sidewalk,0,.02,p-13,false);
-  mesh(root,new THREE.BoxGeometry(220,.22,15),sidewalk,0,.02,p+13,false);
+  mesh(root,new THREE.BoxGeometry(2,.22,220),sidewalk,p-8,.02,0,false);
+  mesh(root,new THREE.BoxGeometry(2,.22,220),sidewalk,p+8,.02,0,false);
+  mesh(root,new THREE.BoxGeometry(220,.22,2),sidewalk,0,.02,p-8,false);
+  mesh(root,new THREE.BoxGeometry(220,.22,2),sidewalk,0,.02,p+8,false);
  }
  const colliders=[];
  let seed=7;
  for(let gx=-2;gx<2;gx++)for(let gz=-2;gz<2;gz++){
   const cx=gx*38+19,cz=gz*38+19;
   for(let n=0;n<4;n++){
-   seed=(seed*9301+49297)%233280;const w=8+(seed/233280)*7;
-   seed=(seed*9301+49297)%233280;const d=8+(seed/233280)*7;
-   const ox=(n%2===0?-1:1)*7,oz=(n<2?-1:1)*7;
+   seed=(seed*9301+49297)%233280;const w=7+(seed/233280)*2.5;
+   seed=(seed*9301+49297)%233280;const d=7+(seed/233280)*2.5;
+   const ox=(n%2===0?-1:1)*5,oz=(n<2?-1:1)*5;
    seed=(seed*9301+49297)%233280;const h=7+(seed/233280)*24;
    building(root,cx+ox,cz+oz,w,d,h,Math.floor(seed),colliders);
   }
