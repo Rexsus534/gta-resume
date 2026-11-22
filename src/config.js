@@ -65,7 +65,7 @@ export const CAR = {
 };
 
 export const TRAFFIC = {
-  count: 14,
+  count: 20,
   cruise: 11,
   turnCruise: 5.5,
   followDistance: 11,
