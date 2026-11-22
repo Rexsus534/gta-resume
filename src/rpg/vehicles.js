@@ -4,7 +4,7 @@ export function makeVehicleSystem(world){
  let active=null;
  function nearest(p){let best=null,dist=4.6;for(const c of world.cars){if(c.occupied)continue;const d=Math.hypot(c.x-p.position.x,c.z-p.position.z);if(d<dist){dist=d;best=c;}}return best;}
  function enterExit(player){
-  if(active){const a=active;const side=new THREE.Vector3(Math.cos(a.rotation),0,-Math.sin(a.rotation)).multiplyScalar(2.2);const x=a.x+side.x,z=a.z+side.z;if(!isBlocked(world,x,z)){player.setPosition(x,z);player.root.visible=true;a.occupied=false;active=null;return 'Araçtan indin.';}return 'İnmek için yer yok.';}
+  if(active){const a=active;const side=new THREE.Vector3(Math.cos(a.rotation),0,-Math.sin(a.rotation)).multiplyScalar(3.4);const x=a.x+side.x,z=a.z+side.z;if(!isBlocked(world,x,z)){player.setPosition(x,z);player.root.visible=true;a.occupied=false;active=null;return 'Araçtan indin.';}return 'İnmek için yer yok.';}
   const c=nearest(player);if(!c)return 'Yakında binebileceğin araç yok. Araca yaklaş.';active=c;c.occupied=true;c.speed=0;player.root.visible=false;return 'Araca bindin. WASD ile sür, F ile in.';
  }
  function update(keys,dt){
