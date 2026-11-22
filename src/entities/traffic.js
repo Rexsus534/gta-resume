@@ -47,7 +47,8 @@ export function createTraffic(scene, graph, seed = 8675309) {
     const z = from.z + (to.z - from.z) * t + _lane.z;
     const heading = Math.atan2(to.x - from.x, to.z - from.z);
 
-    const police = k < 2;\n    const vehicle = new Vehicle(scene, { x, z, heading, colour: police ? 0xe7e7e1 : rng.pick(CAR_COLOURS), police });
+    const police = k < 2;
+    const vehicle = new Vehicle(scene, { x, z, heading, colour: police ? 0xe7e7e1 : rng.pick(CAR_COLOURS), police });
     vehicle.speed = TRAFFIC.cruise * rng.range(0.6, 1);
     vehicle.driver = 'ai';
 
@@ -55,6 +56,18 @@ export function createTraffic(scene, graph, seed = 8675309) {
   }
 
   const _target = new THREE.Vector3();
+
+  function drivePolice(driver, dt, target) {
+    const v = driver.vehicle;
+    const dx = target.x - v.position.x;
+    const dz = target.z - v.position.z;
+    const dist = Math.hypot(dx, dz);
+    const desired = Math.atan2(dx, dz);
+    const err = angleDelta(v.heading, desired);
+    const steer = THREE.MathUtils.clamp(err * 1.8, -1, 1);
+    const throttle = dist > 9 ? 1 : dist < 5 ? -0.35 : 0.25;
+    v.update(dt, { throttle, steer, handbrake: false });
+  }
 
   function driveOne(driver, dt, others) {
     const v = driver.vehicle;
@@ -104,7 +117,7 @@ export function createTraffic(scene, graph, seed = 8675309) {
       const all = [...cars.map((c) => c.vehicle), ...obstacles];
       for (const driver of cars) {
         if (driver.vehicle.driver !== 'ai') continue;
-        driveOne(driver, dt, all);
+        if (wanted && driver.vehicle.isPolice && target) drivePolice(driver, dt, target);\n        else driveOne(driver, dt, all);
       }
     },
 
