@@ -1,17 +1,25 @@
-const S=32;
-export function makeWorld(){const width=64,height=44,tiles=Array.from({length:height},(_,y)=>Array.from({length:width},(_,x)=>{let n=(x*17+y*31+x*y*7)%97;if(x<2||y<2||x>width-3||y>height-3)return 2;if(n<7)return 3;if(n<13)return 4;return 0;}));
-const clear=(x,y,r=2)=>{for(let yy=y-r;yy<=y+r;yy++)for(let xx=x-r;xx<=x+r;xx++)if(tiles[yy]?.[xx]!==undefined)tiles[yy][xx]=0;};
-for(let x=7;x<58;x++)clear(x,22,1);for(let y=8;y<38;y++)clear(32,y,1);
-for(let y=16;y<29;y++)for(let x=8;x<20;x++)tiles[y][x]=0;
-const spawn={x:13*S,y:22*S},npc={x:16*S,y:20*S},altar={x:51*S,y:9*S};
-for(const [x,y] of [[21,14],[47,10],[51,31],[26,30],[40,25],[16,12],[51,9]])clear(x,y,2);
-const obstacles=[];for(let y=0;y<height;y++)for(let x=0;x<width;x++)if(tiles[y][x]===2||tiles[y][x]===3||tiles[y][x]===4)obstacles.push({x:x*S,y:y*S,t:tiles[y][x]});
-return{width,height,tiles,spawn,npc,altar,obstacles};}
-export function isSolid(world,x,y){const tx=Math.floor(x/S),ty=Math.floor(y/S);if(!world.tiles[ty]||world.tiles[ty][tx]===undefined)return true;const t=world.tiles[ty][tx];return t===2||t===3||t===4;}
-function pixelTree(c,x,y){c.fillStyle='#1c392c';c.fillRect(x+3,y+9,26,20);c.fillStyle='#2f6740';c.fillRect(x+5,y+3,22,22);c.fillStyle='#4b8a4e';c.fillRect(x+9,y,12,8);c.fillStyle='#79543a';c.fillRect(x+13,y+22,7,12);c.fillStyle='#75a95a';c.fillRect(x+8,y+7,4,4);c.fillRect(x+21,y+13,4,4);}
-function drawTile(c,t,x,y){if(t===0){c.fillStyle=((x/32|0)+(y/32|0))%2?'#527d48':'#57834b';c.fillRect(x,y,32,32);c.fillStyle='#6b9553';c.fillRect(x+5,y+7,2,2);c.fillRect(x+23,y+22,2,2);}else if(t===1){c.fillStyle='#8c754d';c.fillRect(x,y,32,32);}else if(t===2){c.fillStyle='#294f69';c.fillRect(x,y,32,32);c.fillStyle='#4d8290';c.fillRect(x+3,y+8,13,2);c.fillRect(x+18,y+21,9,2);}else if(t===3){pixelTree(c,x,y);}else{c.fillStyle='#777c79';c.fillRect(x+5,y+8,22,20);c.fillStyle='#a6aaa0';c.fillRect(x+9,y+5,13,7);}}
-export function drawWorld(c,w){const S=32;for(let y=0;y<w.height;y++)for(let x=0;x<w.width;x++)drawTile(c,w.tiles[y][x],x*S,y*S);
-for(let x=8;x<20;x++){drawTile(c,1,x*S,16*S);drawTile(c,1,x*S,28*S);}for(let y=16;y<29;y++){drawTile(c,1,8*S,y*S);drawTile(c,1,19*S,y*S);}
-c.fillStyle='#b18a55';c.fillRect(10*S,18*S,7*S,6*S);c.fillStyle='#d7c18b';c.fillRect(10*S+5,18*S+5,7*S-10,6*S-10);c.fillStyle='#754b35';c.fillRect(12*S,18*S+20,3*S,4*S);c.fillStyle='#9b4e3d';c.fillRect(10*S,17*S,7*S,10);c.fillStyle='#d27a4d';c.fillRect(11*S,16*S,5*S,3*S);
-const n=w.npc;c.fillStyle='#503d31';c.fillRect(n.x-10,n.y-8,20,24);c.fillStyle='#e5b78a';c.fillRect(n.x-7,n.y-17,14,13);c.fillStyle='#e4d3a0';c.fillRect(n.x-9,n.y-19,18,5);c.fillStyle='#f6e7ae';c.fillRect(n.x-3,n.y-12,2,2);
-const a=w.altar;c.fillStyle='#8c8c94';c.fillRect(a.x-23,a.y-14,46,29);c.fillStyle='#c5b8d2';c.fillRect(a.x-15,a.y-22,30,10);c.fillStyle='#70d4ca';c.fillRect(a.x-4,a.y-18,8,8);c.fillStyle='#d7c58b';c.fillRect(a.x-2,a.y+15,4,5);}
+import * as THREE from 'three';
+const mat=(color,roughness=.9)=>new THREE.MeshStandardMaterial({color,roughness});
+function box(parent,x,y,z,w,h,d,material,cast=true){const m=new THREE.Mesh(new THREE.BoxGeometry(w,h,d),material);m.position.set(x,y,z);m.castShadow=cast;m.receiveShadow=true;parent.add(m);return m;}
+function tree(parent,x,z,scale=1){const g=new THREE.Group();g.position.set(x,0,z);g.scale.setScalar(scale);parent.add(g);const trunk=mat('#75503a'),leaf1=mat('#2d6844'),leaf2=mat('#3c8050'),leaf3=mat('#57935a');const t=new THREE.Mesh(new THREE.CylinderGeometry(.19,.27,1.45,7),trunk);t.position.y=.72;t.castShadow=true;g.add(t);for(const [y,r,m] of [[1.55,.95,leaf1],[2.15,.72,leaf2],[2.65,.45,leaf3]]){const c=new THREE.Mesh(new THREE.IcosahedronGeometry(r,1),m);c.position.set(0,y,0);c.castShadow=true;c.receiveShadow=true;g.add(c);}return g;}
+function rock(parent,x,z,s=1){const m=new THREE.Mesh(new THREE.DodecahedronGeometry(.55*s,0),mat('#777f75'));m.position.set(x,.36*s,z);m.scale.y=.75;m.rotation.set(.2,x*.4,z*.3);m.castShadow=true;m.receiveShadow=true;parent.add(m);}
+function house(parent,x,z,rotation=0){const g=new THREE.Group();g.position.set(x,0,z);g.rotation.y=rotation;parent.add(g);box(g,0,1.15,0,5.2,2.3,4.3,mat('#b98b59'));box(g,0,2.65,0,5.8,.65,4.9,mat('#713d32'));const roof=box(g,0,3.25,0,6.2,.35,5.3,mat('#944b3b'));roof.rotation.z=.12;box(g,0,.9,2.18,1.15,1.8,.12,mat('#49352b'));for(const xw of [-1.6,1.6]){box(g,xw,1.55,2.2,.72,.65,.12,mat('#d7c17f'));}return g;}
+function makeNPC(parent,x,z){const g=new THREE.Group();g.position.set(x,0,z);parent.add(g);const robe=new THREE.Mesh(new THREE.CylinderGeometry(.48,.68,1.35,8),mat('#7a593f'));robe.position.y=.68;robe.castShadow=true;g.add(robe);const head=new THREE.Mesh(new THREE.SphereGeometry(.36,12,10),mat('#d5a77e'));head.position.y=1.62;head.castShadow=true;g.add(head);const hood=new THREE.Mesh(new THREE.ConeGeometry(.43,.58,8),mat('#d4c29a'));hood.position.y=2.05;hood.castShadow=true;g.add(hood);const staff=box(g,.62,.95,0,.09,1.9,.09,mat('#6e4b32'));staff.rotation.z=-.12;const crystal=new THREE.Mesh(new THREE.OctahedronGeometry(.22),new THREE.MeshStandardMaterial({color:'#74e7dc',emissive:'#1d9e95',emissiveIntensity:1.5}));crystal.position.set(.62,2.02,0);g.add(crystal);return g;}
+function makeAltar(parent,x,z){const g=new THREE.Group();g.position.set(x,0,z);parent.add(g);const stone=mat('#858d8a'),glow=new THREE.MeshStandardMaterial({color:'#6ce8d8',emissive:'#2bc9b5',emissiveIntensity:2});const base=new THREE.Mesh(new THREE.CylinderGeometry(1.55,1.8,.55,8),stone);base.position.y=.28;base.castShadow=true;g.add(base);const ring=new THREE.Mesh(new THREE.TorusGeometry(1.05,.13,8,32),glow);ring.position.y=1.15;ring.rotation.x=Math.PI/2;g.add(ring);const gem=new THREE.Mesh(new THREE.OctahedronGeometry(.62),glow);gem.position.y=1.85;gem.castShadow=true;g.add(gem);return{group:g,gem,ring};}
+export function makeWorld(scene){
+ const group=new THREE.Group();scene.add(group);const ground=new THREE.Mesh(new THREE.PlaneGeometry(150,150),mat('#557e4b'));ground.rotation.x=-Math.PI/2;ground.position.y=-.08;ground.receiveShadow=true;group.add(ground);
+ const patchMat=[mat('#608951'),mat('#4c7546'),mat('#6b9255')];for(let i=0;i<260;i++){const x=((i*73)%138)-69,z=((i*47)%138)-69;const p=new THREE.Mesh(new THREE.CircleGeometry(.35+(i%4)*.12,6),patchMat[i%3]);p.rotation.x=-Math.PI/2;p.position.set(x,.005,z);group.add(p);}
+ const pathMat=mat('#b19a6c');for(let i=0;i<29;i++){const p=new THREE.Mesh(new THREE.BoxGeometry(2.3,.08,1.3),pathMat);p.position.set(-18+i*1.28,.02,12-i*.3);p.rotation.y=.15;p.receiveShadow=true;group.add(p);}
+ const water=new THREE.Mesh(new THREE.CircleGeometry(8,40),new THREE.MeshStandardMaterial({color:'#477f86',roughness:.25,metalness:.12}));water.rotation.x=-Math.PI/2;water.position.set(-28,.03,-22);group.add(water);
+ const shore=new THREE.Mesh(new THREE.TorusGeometry(8,.5,6,48),mat('#b7a477'));shore.rotation.x=Math.PI/2;shore.position.set(-28,.05,-22);group.add(shore);
+ const colliders=[];const addTree=(x,z,s)=>{tree(group,x,z,s);colliders.push({x,z,r:.72*s});};
+ for(let i=0;i<115;i++){const x=((i*37)%126)-63,z=((i*59)%126)-63;if(Math.hypot(x+2,z-8)<17||Math.hypot(x+28,z+22)<10||Math.hypot(x-29,z+28)<9)continue;addTree(x,z,.8+(i%5)*.1);}
+ for(const [x,z,s] of [[-12,-8,1.1],[16,-18,1],[35,14,1.2],[-42,20,1.1],[4,34,.9],[48,-30,1.1]]){rock(group,x,z,s);colliders.push({x,z,r:.7*s});}
+ house(group,-4,8,-.2);house(group,5,8,.15);house(group,1,15,Math.PI);
+ const spawn={x:0,z:21};const npc={x:1.5,z:5,mesh:makeNPC(group,1.5,5)};const altar={x:31,z:-31,...makeAltar(group,31,-31)};
+ const glowLight=new THREE.PointLight('#4fe8d7',18,13);glowLight.position.set(31,3,-31);group.add(glowLight);
+ const bounds=68;
+ return{group,ground,colliders,spawn,npc,altar,bounds,water,waterMaterial:water.material,trees:group.children.filter(o=>o.type==='Group')};
+}
+export function isBlocked(world,x,z,r=.52){if(Math.abs(x)>world.bounds||Math.abs(z)>world.bounds)return true;for(const o of world.colliders){if(Math.hypot(x-o.x,z-o.z)<r+o.r)return true;}if(Math.hypot(x+28,z+22)<8.2+r)return true;return false;}
+export function updateWorld(world,dt){world.waterMaterial.opacity=1;world.altar.gem.rotation.y+=dt*.8;world.altar.gem.rotation.x+=dt*.4;world.altar.ring.rotation.z+=dt*.35;}
