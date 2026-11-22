@@ -47,7 +47,7 @@ export function createTraffic(scene, graph, seed = 8675309) {
     const z = from.z + (to.z - from.z) * t + _lane.z;
     const heading = Math.atan2(to.x - from.x, to.z - from.z);
 
-    const vehicle = new Vehicle(scene, { x, z, heading, colour: rng.pick(CAR_COLOURS) });
+    const police = k < 2;\n    const vehicle = new Vehicle(scene, { x, z, heading, colour: police ? 0xe7e7e1 : rng.pick(CAR_COLOURS), police });
     vehicle.speed = TRAFFIC.cruise * rng.range(0.6, 1);
     vehicle.driver = 'ai';
 
@@ -100,7 +100,7 @@ export function createTraffic(scene, graph, seed = 8675309) {
     vehicles: cars.map((c) => c.vehicle),
 
     /** @param {Array} obstacles parked cars, so the AI doesn't drive through them */
-    update(dt, obstacles = []) {
+    update(dt, obstacles = [], target = null, wanted = false) {
       const all = [...cars.map((c) => c.vehicle), ...obstacles];
       for (const driver of cars) {
         if (driver.vehicle.driver !== 'ai') continue;
