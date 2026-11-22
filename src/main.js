@@ -91,6 +91,8 @@ async function boot() {
     }
 
     const v = state.activeVehicle;
+    v.openDriverDoor();
+    v.speed = 0;
     v.getExitPoint(_exit);
     if (isBlocked(_exit.x, _exit.z, PLAYER.radius)) {
       const rightX = Math.cos(v.heading), rightZ = -Math.sin(v.heading);
@@ -143,6 +145,7 @@ async function boot() {
     }
 
     traffic.update(dt, parked, focus, wantedLevel > 0);
+    for (const v of allVehicles) if (v !== state.activeVehicle && v.driver !== 'ai') v.update(dt, { throttle: 0, steer: 0, handbrake: false });
     pedestrians.update(dt);
     lighting.update(focus);
 
