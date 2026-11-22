@@ -12,7 +12,7 @@ export function createHud() {
   const label = document.getElementById('mode-label');
   const panel = document.getElementById('mode-panel');
   const prompt = document.getElementById('prompt');
-  prompt.innerHTML = 'Press <b>F</b> to get in';
+  prompt.innerHTML = 'Press <b>F</b> to get in';\n  const stars = document.getElementById('wanted-stars');\n  const wantedStatus = document.getElementById('wanted-status');\n  const toast = document.getElementById('toast');\n  let toastTimer = null;
 
   const W = canvas.width;
   const H = canvas.height;
@@ -77,7 +77,7 @@ export function createHud() {
      * @param {string} mode   Mode.ON_FOOT | Mode.DRIVING
      * @param {boolean} nearVehicle
      */
-    update(speed, mode, nearVehicle) {
+    update(speed, mode, nearVehicle, occupied = false) {
       const kph = speed * 3.6;
       const max = mode === Mode.DRIVING ? 140 : 26;
 
@@ -95,7 +95,7 @@ export function createHud() {
       }
 
       // Only prompt on foot; a permanent "get out" banner while driving is noise.
-      prompt.classList.toggle('hidden', !(mode === Mode.ON_FOOT && nearVehicle));
+      if (mode === Mode.ON_FOOT && nearVehicle) prompt.innerHTML = occupied ? '<b>F</b> Aracı al · sürücü inecek' : '<b>F</b> Araca bin';\n      prompt.classList.toggle('hidden', !(mode === Mode.ON_FOOT && nearVehicle));\n    },\n    updateWanted(level, seconds, stolen) {\n      if (stars) stars.textContent = '★'.repeat(level) + '☆'.repeat(5-level);\n      if (wantedStatus) wantedStatus.textContent = level ? 'POLİS PEŞİNDE · ' + Math.ceil(seconds) + ' sn' : 'Şehir sakin';\n    },\n    notify(message) {\n      if (!toast) return;\n      toast.textContent = message; toast.classList.add('show');\n      clearTimeout(toastTimer); toastTimer = setTimeout(() => toast.classList.remove('show'), 2600);
     },
   };
 }
