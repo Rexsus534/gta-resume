@@ -117,7 +117,8 @@ export function createTraffic(scene, graph, seed = 8675309) {
       const all = [...cars.map((c) => c.vehicle), ...obstacles];
       for (const driver of cars) {
         if (driver.vehicle.driver !== 'ai') continue;
-        if (wanted && driver.vehicle.isPolice && target) drivePolice(driver, dt, target);\n        else driveOne(driver, dt, all);
+        if (wanted && driver.vehicle.isPolice && target) drivePolice(driver, dt, target);
+        else driveOne(driver, dt, all);
       }
     },
 
