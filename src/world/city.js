@@ -359,7 +359,7 @@ export function createCity(scene, seed = 20260725) {
 
   // Guarantee one car right where the player starts, so F is discoverable.
   const start = nodePos(4, 4);
-  parking.unshift({ x: start.x + CITY.roadHalfWidth - 1.7, z: start.z + 14, heading: 0 });
+  parking.unshift({ x: start.x + CITY.roadHalfWidth - 1.7, z: start.z - 14.4, heading: 0 });
 
   buildings.sort((a, b) => b.h - a.h);
   const landmarks = buildings.slice(0, 6).map((b) => ({ x: b.x, z: b.z, h: b.h }));
@@ -370,7 +370,7 @@ export function createCity(scene, seed = 20260725) {
     minimap: { blocks, buildings, landmarks },
     // Close enough to the guaranteed parked car that the "press F" prompt shows
     // on the first frame.
-    playerSpawn: new THREE.Vector3(start.x + 2.4, 0, start.z + 16.6),
+    playerSpawn: new THREE.Vector3(start.x + 1.5, 0, start.z - 14.4),
     parking,
   };
 }
