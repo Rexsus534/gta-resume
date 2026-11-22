@@ -1,38 +1,41 @@
-# Vice City Stories
+# Vice City — Open World Stories
 
-Three.js ve Vite ile hazırlanmış, tarayıcıda çalışan 3D açık dünya şehir oyunu.
+A third-person 3D open-world city game built with Three.js and Vite.
 
-## Çalıştırma
+## Run locally
 
 ```bash
 npm install
 npm run dev
 ```
 
-## Kontroller
+## Controls
 
-| Tuş | İşlev |
+| Input | Action |
 | --- | --- |
-| WASD / yön tuşları | Yürüme ve araç kullanma |
-| Shift | Koşma |
-| F | Yakındaki araca binme / araçtan inme |
-| E | Görev alma ve teslimatı tamamlama |
-| K | Oyunu kaydetme |
+| W A S D | Move / drive |
+| Shift | Sprint |
+| Mouse | Look around |
+| Scroll | Zoom |
+| F | Enter / exit a nearby vehicle |
+| Space | Handbrake |
+| Esc | Release pointer lock |
 
-Mobil ekranda sol taraftaki yön tuşları ve sağ taraftaki F / E düğmeleri kullanılabilir.
+## Current game systems
 
-## Oyun özellikleri
+- Procedural 8×8 city with textured roads, intersections, sidewalks, parks, street lamps, high-rise buildings and glowing windows.
+- Third-person player using the included GLB character and walking/running animations.
+- Twenty AI traffic vehicles following the road network.
+- Parked cars, vehicle entry/exit and animated driver-side doors.
+- Occupied traffic cars with visible 3D drivers; taking an occupied car triggers a short stylized NPC exit animation.
+- Forty-eight 3D pedestrians walking around city blocks.
+- Two patrol cars with flashing red/blue lightbars and a police pursuit mode.
+- Synthesized siren audio after taking an occupied vehicle.
+- Speedometer, minimap, wanted stars and in-game notifications.
 
-- Üçüncü şahıs kamera ve 3D karakter modeli.
-- Sahil, plaj, palmiye ağaçları, park, liman, yollar ve çok katlı binalardan oluşan şehir.
-- Yürüyen 3D yayalar ve şehirde kullanılabilen araçlar.
-- Araçlara binme, inme, hızlanma, geri gitme ve direksiyon kontrolü.
-- Teslimat görevi, mini harita, para ödülü ve yerel kayıt.
-- Masaüstü ve mobil ekranlara uyumlu arayüz.
+The player spawns on a clear avenue next to a starter vehicle. City geometry and traffic use the original optimized Three.js systems in this repository; pedestrian characters and vehicle occupants are lightweight 3D meshes.
 
-Şehir, binalar, yayalar ve araçlar Three.js geometrileriyle oluşturulur. Karakter için `public/models/` içindeki GLB model ve animasyon dosyaları kullanılır.
-
-## Teknoloji
+## Tech
 
 - Three.js
 - Vite
