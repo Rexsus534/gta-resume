@@ -109,11 +109,11 @@ export function makeWorld(scene){
   pedestrians.push({group:g,x,z,phase:i*.8,dir:i%2?1:-1});
  }
  const cars=[];
- const parked=[[-25,5,'#d44d48',Math.PI/2],[18,-24,'#e2bd50',0],[55,18,'#4c8fb4',Math.PI/2],[-58,18,'#e7e5db',0],[23,56,'#5e9c70',Math.PI/2],[-20,-55,'#a65b9b',0],[75,-25,'#cf7542',Math.PI/2]];
+ const parked=[[-10,13,'#d44d48',Math.PI/2],[-25,5,'#d44d48',Math.PI/2],[18,-24,'#e2bd50',0],[55,18,'#4c8fb4',Math.PI/2],[-58,18,'#e7e5db',0],[23,56,'#5e9c70',Math.PI/2],[-20,-55,'#a65b9b',0],[75,-25,'#cf7542',Math.PI/2]];
  for(const [x,z,c,r] of parked)cars.push({group:carStatic(root,x,z,c,r),x,z,rotation:r,speed:0,occupied:false});
  const spawn={x:-7,z:17};
  const missionNpc={x:8,z:18,group:human(root,8,18,'#e7c15e','#26394c')};
- const marker=new THREE.Group();marker.position.set(65,0,-55);root.add(marker);
+ const marker=new THREE.Group();marker.position.set(76,0,-15);root.add(marker);
  const ring=mesh(marker,new THREE.TorusGeometry(2,.15,8,32),material('#f3cb65',.3,.3),0,1.2,0,false);ring.rotation.x=Math.PI/2;
  mesh(marker,new THREE.CylinderGeometry(.08,.08,2.4,8),material('#f3cb65'),0,1.2,0,false);
  const bounds=108;
