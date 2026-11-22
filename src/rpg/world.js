@@ -15,7 +15,7 @@ export function makeWorld(scene){
  const colliders=[];const addTree=(x,z,s)=>{tree(group,x,z,s);colliders.push({x,z,r:.72*s});};
  for(let i=0;i<115;i++){const x=((i*37)%126)-63,z=((i*59)%126)-63;if(Math.hypot(x+2,z-8)<17||Math.hypot(x+28,z+22)<10||Math.hypot(x-29,z+28)<9)continue;addTree(x,z,.8+(i%5)*.1);}
  for(const [x,z,s] of [[-12,-8,1.1],[16,-18,1],[35,14,1.2],[-42,20,1.1],[4,34,.9],[48,-30,1.1]]){rock(group,x,z,s);colliders.push({x,z,r:.7*s});}
- house(group,-4,8,-.2);house(group,5,8,.15);house(group,1,15,Math.PI);
+ house(group,-4,8,-.2);house(group,5,8,.15);house(group,1,15,Math.PI);colliders.push({x:-4,z:8,r:3.1},{x:5,z:8,r:3.1},{x:1,z:15,r:3.1});
  const spawn={x:0,z:21};const npc={x:1.5,z:5,mesh:makeNPC(group,1.5,5)};const altar={x:31,z:-31,...makeAltar(group,31,-31)};
  const glowLight=new THREE.PointLight('#4fe8d7',18,13);glowLight.position.set(31,3,-31);group.add(glowLight);
  const bounds=68;
